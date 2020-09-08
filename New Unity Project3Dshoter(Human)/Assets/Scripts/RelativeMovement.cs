@@ -15,12 +15,14 @@ public class RelativeMovement : MonoBehaviour
     public float _minFall = -1.5f;
 
     private ControllerColliderHit _contact;
+    private Animator _animator;
     private float _vertSpeed;
 
     private CharacterController _charcontroller;
     private void Start()
     {
         _charcontroller = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
         _vertSpeed = _minFall;
     }
 
@@ -45,6 +47,9 @@ public class RelativeMovement : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, direction, _rotSpeed * Time.deltaTime);
         }
 
+        _animator.SetFloat("speed", movement.sqrMagnitude);
+
+
         bool hitGround = false;
         RaycastHit hit;
         if (_vertSpeed < 0 && Physics.Raycast(transform.position, Vector3.down, out hit))
@@ -62,6 +67,7 @@ public class RelativeMovement : MonoBehaviour
             else
             {
                 _vertSpeed = _minFall;
+                _animator.SetBool("jump", false);
             }
         }
         else
@@ -70,6 +76,11 @@ public class RelativeMovement : MonoBehaviour
             if (_vertSpeed < _terminalVelocity)
             {
                 _vertSpeed = _terminalVelocity;
+            }
+
+            if(_contact != null)
+            {
+                _animator.SetBool("jump", true);
             }
 
             if (_charcontroller.isGrounded)
