@@ -9,6 +9,7 @@ public class OrbitalCamera : MonoBehaviour
     public float _rotSpeed = 1.5f;
     private float _rotY;
     private Vector3 _offSet;
+    public float _correctVertical;
 
     private void Start()
     {
@@ -29,7 +30,7 @@ public class OrbitalCamera : MonoBehaviour
             _rotY += Input.GetAxis("Mouse X") * _rotSpeed * 3;
         }
 
-        Quaternion rotation = Quaternion.Euler(0, _rotY, 0);
+        Quaternion rotation = Quaternion.Euler(0 + _correctVertical, _rotY, 0);
         transform.position = _target.position - (rotation * _offSet);
         transform.LookAt(_target);
     }
