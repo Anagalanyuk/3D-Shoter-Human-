@@ -2,10 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class RelativeMovement : MonoBehaviour
 {
     [SerializeField] private Transform _target;
+
     public float _rotSpeed = 15.0f;
+    public float _moveSped = 6.0f;
+    public float _jumpSpeed = 15.0f;
+    public float _gravity = -9.8f;
+    public float _terminalVelocity = -10f;
+    public float _minFall = -1.5f;
+
+    private ControllerColliderHit _contact;
+    private float _vertSpeed;
+
+    private CharacterController _charcontroller;
+    private void Start()
+    {
+        _charcontroller = GetComponent<CharacterController>();
+        _vertSpeed = _minFall;
+    }
 
     void Update()
     {
@@ -14,10 +31,11 @@ public class RelativeMovement : MonoBehaviour
         float horInput = Input.GetAxis("Horizontal");
         float vertInput = Input.GetAxis("Vertical");
 
-        if(horInput != 0 || vertInput != 0)
+        if (horInput != 0 || vertInput != 0)
         {
-            movement.x = horInput;
-            movement.z = vertInput;
+            movement.x = horInput * _moveSped;
+            movement.z = vertInput * _moveSped;
+            movement = Vector3.ClampMagnitude(movement, _moveSped);
 
             Quaternion tmp = _target.rotation;
             _target.eulerAngles = new Vector3(0, _target.eulerAngles.y, 0);
@@ -26,5 +44,55 @@ public class RelativeMovement : MonoBehaviour
             Quaternion direction = Quaternion.LookRotation(movement);
             transform.rotation = Quaternion.Lerp(transform.rotation, direction, _rotSpeed * Time.deltaTime);
         }
+
+        bool hitGround = false;
+        RaycastHit hit;
+        if (_vertSpeed < 0 && Physics.Raycast(transform.position, Vector3.down, out hit))
+        {
+            float check = (_charcontroller.height + _charcontroller.radius) / 1.9f;
+            hitGround = hit.distance <= check;
+        }
+
+        if (hitGround)
+        {
+            if (Input.GetButtonDown("Jump"))
+            {
+                _vertSpeed = _jumpSpeed;
+            }
+            else
+            {
+                _vertSpeed = _minFall;
+            }
+        }
+        else
+        {
+            _vertSpeed += _gravity * 5 * Time.deltaTime;
+            if (_vertSpeed < _terminalVelocity)
+            {
+                _vertSpeed = _terminalVelocity;
+            }
+
+            if (_charcontroller.isGrounded)
+            {
+                if (Vector3.Dot(movement, _contact.normal) < 0)
+                {
+                    movement = _contact.normal * _moveSped;
+                }
+                else
+                {
+                    movement += _contact.normal * _moveSped;
+                }
+            }
+        }
+
+        movement.y = _vertSpeed;
+
+        movement *= Time.deltaTime;
+        _charcontroller.Move(movement);
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        _contact = hit;
     }
 }
