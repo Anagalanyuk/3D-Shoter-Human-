@@ -25,10 +25,10 @@ public class Managares : MonoBehaviour
 
 
     }
-   
+
     private IEnumerator StartupManagers()
     {
-        foreach(IGameManager manager in _startSequence)
+        foreach (IGameManager manager in _startSequence)
         {
             manager.Startup();
         }
@@ -38,12 +38,26 @@ public class Managares : MonoBehaviour
         int numModuls = _startSequence.Count;
         int numReady = 0;
 
-        while(numReady < numModuls)
+        while (numReady < numModuls)
         {
             int lastRedy = numReady;
             numReady = 0;
+
+
+            foreach (IGameManager manager in _startSequence)
+            {
+                if (manager.status == ManagerStatus.Started)
+                {
+                    numReady++;
+                }
+            }
+
+            if (numReady > lastRedy)
+            {
+                Debug.Log("Progres: " + numReady + "/" + numModuls);
+                yield return null;
+            }
         }
-
-
+        Debug.Log("All managers startes up");
     }
 }
