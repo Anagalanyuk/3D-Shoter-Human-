@@ -13,6 +13,7 @@ public class RelativeMovement : MonoBehaviour
     public float _gravity = -9.8f;
     public float _terminalVelocity = -10f;
     public float _minFall = -1.5f;
+    public float pushForce = 3.0f;
 
     private ControllerColliderHit _contact;
     private Animator _animator;
@@ -78,7 +79,7 @@ public class RelativeMovement : MonoBehaviour
                 _vertSpeed = _terminalVelocity;
             }
 
-            if(_contact != null)
+            if (_contact != null)
             {
                 _animator.SetBool("jump", true);
             }
@@ -105,5 +106,11 @@ public class RelativeMovement : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         _contact = hit;
+
+        Rigidbody body = hit.collider.attachedRigidbody;
+        if (body != null && !body.isKinematic)
+        {
+            body.velocity = hit.moveDirection * pushForce;
+        }
     }
 }
