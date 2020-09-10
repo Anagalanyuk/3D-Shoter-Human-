@@ -18,13 +18,13 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     private void DisplayeItems()
     {
-        string displayItm = "Items: ";
+        string displayItem = "Items: ";
 
         foreach (KeyValuePair<string, int> item in _items)
         {
-            displayItm += item.Key + "(" + item.Value + ") ";
+            displayItem += item.Key + "(" + item.Value + ") ";
         }
-        Debug.Log(displayItm);
+        Debug.Log(displayItem);
     }
 
     public void AddItem(string name)
@@ -59,20 +59,15 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     public bool Eqipuippedtem(string name)
     {
-        bool isKey;
         if (_items.ContainsKey(name) && _equippedItem != name)
         {
             _equippedItem = name;
             Debug.Log("Equipped " + name);
-            isKey = true;
+            return true;
         }
-        else
-        {
         _equippedItem = null;
         Debug.Log("Equipped");
-        isKey = false;
-        }
-        return isKey;
+        return false; ;
     }
 
     public bool ConsumItem(string name)

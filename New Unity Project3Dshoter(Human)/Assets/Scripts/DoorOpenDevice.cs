@@ -7,18 +7,18 @@ public class DoorOpenDevice : MonoBehaviour
 
     public void Operate()
     {
-        Debug.Log("Botton");
-        if (_open)
-        {
-            Vector3 pos = transform.position - _dPos;
-            transform.position = pos;
-        }
-        else
-        {
-            Vector3 pos = transform.position + _dPos;
-            transform.position = pos;
-        }
-        _open = !_open;
+        //Debug.Log("Botton");
+        //if (_open)
+        //{
+        //    Vector3 pos = transform.position - _dPos;
+        //    transform.position = pos;
+        //}
+        //else
+        //{
+        //    Vector3 pos = transform.position + _dPos;
+        //    transform.position = pos;
+        //}
+        //_open = !_open;
     }
 
     public void Activate()

@@ -45,6 +45,15 @@ public class BasicUI : MonoBehaviour
             {
                 Managares.Inventory.Eqipuippedtem(item);
             }
+
+            if (item == "health")
+            {
+                if (GUI.Button(new Rect(-_posX, _posY + _height + _buffer, _width, _height), "Use gealth"))
+                {
+                    Managares.Inventory.ConsumItem("health");
+                    Managares.Player.ChangeHalth(25);
+                }
+            }
             _posX += _width + _buffer;
         }
     }
