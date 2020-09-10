@@ -7,6 +7,9 @@ public class CollectbleItem : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log(_itemName);
+
+        Managares.Inventory.AddItem(_itemName);
+
         Destroy(this.gameObject);
     }
 }
